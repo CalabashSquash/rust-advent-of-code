@@ -8,27 +8,15 @@ struct Column {
 }
 
 pub fn problem1() -> i64 {
-    println!("hi");
-    let (col1_ids, col2_ids) = parse_file("src/day1.txt");
-    let col1_counts = create_counts(&col1_ids);
-    let col2_counts = create_counts(&col2_ids);
-
-    let col1_min = std::i64::MAX;
-    let col2_min = std::i64::MAX;
-
-    let mut col1 = Column { ids: col1_ids, min: col1_min, counts: col1_counts };
-    let mut col2 = Column { ids: col2_ids, min: col2_min, counts: col2_counts };
+    let (mut col1_ids, mut col2_ids) = parse_file("src/day1.txt");
 
     let mut distance = 0;
-    while col1.ids.len() > 0 {
-        let x;
-        let y;
-        (x, y, col1, col2) = find_next_smallest_pair(col1, col2);
-        col1.min = x;
-        col2.min = y;
-        println!("{}, {}", x, y);
-        distance += (x - y).abs();
+    col1_ids.sort();
+    col2_ids.sort();
+    for i in 0..col1_ids.len() {
+        distance += (col1_ids[i] - col2_ids[i]).abs();
     }
+    
     distance
 }
 
