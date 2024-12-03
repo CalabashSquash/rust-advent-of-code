@@ -30,7 +30,7 @@ fn search_line(numbers: &Vec<i64>) -> bool {
                             is_safe = false;
                             break;
                         }
-                    },
+                    }
                     false => {
                         increasing = Some(false);
                         if previous - num > 3 {
@@ -53,11 +53,11 @@ pub fn problem2() -> i64 {
     let mut safe = 0;
     for line in read_to_string("src/day2.txt").unwrap().lines() {
         let numbers: std::str::Split<'_, &str> = line.split(" ");
-        let vec: Vec<i64>  = numbers.map(|f| f.parse().expect("not a num")).collect();
+        let vec: Vec<i64> = numbers.map(|f| f.parse().expect("not a num")).collect();
         match search_line(&vec) {
             true => {
                 safe += 1;
-            },
+            }
             false => {
                 for i in 0..vec.len() {
                     let mut numbers_without_x = vec.clone();
@@ -66,7 +66,7 @@ pub fn problem2() -> i64 {
                         true => {
                             safe += 1;
                             break;
-                        },
+                        }
                         false => {
                             continue;
                         }
@@ -92,10 +92,9 @@ pub fn problem2() -> i64 {
                 //         }
                 //     }
                 // }
-            },
+            }
         }
     }
-
 
     safe
 }
@@ -104,11 +103,11 @@ pub fn problem1() -> i64 {
     let mut safe = 0;
     for line in read_to_string("src/day2.txt").unwrap().lines() {
         let numbers: std::str::Split<'_, &str> = line.split(" ");
-        let vec: Vec<i64>  = numbers.map(|f| f.parse().expect("not a num")).collect();
+        let vec: Vec<i64> = numbers.map(|f| f.parse().expect("not a num")).collect();
         match search_line(&vec) {
             true => {
                 safe += 1;
-            },
+            }
             false => {}
         }
     }
