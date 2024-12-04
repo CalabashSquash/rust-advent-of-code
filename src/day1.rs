@@ -1,21 +1,17 @@
-use std::{collections::HashMap, fs::read_to_string, sync::Arc};
+use std::{collections::HashMap, fs::read_to_string};
 
 pub fn problem1() -> i64 {
-    let (mut col1_ids, mut col2_ids) = parse_file("src/day1.txt");
+    let (mut col1, mut col2) = parse_file("src/day1.txt");
 
     let mut distance = 0;
-    col1_ids.sort();
-    col2_ids.sort();
-    for i in 0..col1_ids.len() {
-        distance += ((col1_ids[i] - col2_ids[i]) as i64).abs();
+    col1.sort();
+    col2.sort();
+    for i in 0..col1.len() {
+        distance += (col1[i] - col2[i]).abs();
     }
 
     // Another way to do it
-    // distance = col1_ids
-    //     .iter()
-    //     .zip(col2_ids.iter())
-    //     .map(|(x, y)| (x - y).abs())
-    //     .sum();
+    distance = std::iter::zip(col1, col2).map(|(x, y)| (x - y).abs()).sum();
 
     distance
 }
@@ -23,25 +19,31 @@ pub fn problem1() -> i64 {
 pub fn problem2() -> usize {
     let mut similarity = 0;
 
-    let (col1_ids, col2_ids) = parse_file("src/day1.txt");
-    // let col2_counts = create_counts(&col2_ids);
+    let (col1, col2) = parse_file("src/day1.txt");
+    let col2_counts = create_counts(&col2);
 
-    // for id in col1_ids {
+    // for id in col1{
     //     similarity += id * *(col2_counts.get(&id)).unwrap_or(&0);
     // }
 
-    // let col2_ids_iter = col2_ids.iter();
+    // println!("{}", similarity);
 
-    similarity = col1_ids.iter().map(|x| {
-        x * col2_ids.iter().filter(|n| *n == x).count()
-    }
-    ).sum();
+    similarity = col1
+        .iter()
+        .map(|x| 
+            (*x as usize)
+                * col2
+                    .iter()
+                    .filter(|n| *n == x)
+                    .count()
+        )
+        .sum();
 
     similarity
 }
 
-fn create_counts(column: &Vec<usize>) -> HashMap<usize, usize> {
-    let mut counts: HashMap<usize, usize> = HashMap::new();
+fn create_counts(column: &Vec<i64>) -> HashMap<i64, i64> {
+    let mut counts: HashMap<i64, i64> = HashMap::new();
     for id in column {
         match counts.get(&id) {
             Some(f) => {
@@ -55,7 +57,7 @@ fn create_counts(column: &Vec<usize>) -> HashMap<usize, usize> {
     counts
 }
 
-fn parse_file(filename: &str) -> (Vec<usize>, Vec<usize>) {
+fn parse_file(filename: &str) -> (Vec<i64>, Vec<i64>) {
     let mut first_col = Vec::new();
     let mut second_col = Vec::new();
 
@@ -65,14 +67,14 @@ fn parse_file(filename: &str) -> (Vec<usize>, Vec<usize>) {
             numbers
                 .next()
                 .expect("No first number in row")
-                .parse::<usize>()
+                .parse::<i64>()
                 .expect("Could not parse first number"),
         );
         second_col.push(
             numbers
                 .next()
                 .expect("No second number in row")
-                .parse::<usize>()
+                .parse::<i64>()
                 .expect("Could not parse second number"),
         );
     }

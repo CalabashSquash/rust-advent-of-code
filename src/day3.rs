@@ -27,13 +27,13 @@ pub fn problem1() -> i64 {
                         }
                         println!("multiplying {} and {}", first, second);
                         sum += first * second;
-                    },
+                    }
                     Err(_) => {
                         println!("pair_vec: {:#?}, no second num", pair_vec);
                         continue;
                     }
                 }
-            },
+            }
             Err(_) => {
                 println!("pair_vec: {:#?}, no first num", pair_vec);
                 continue;
@@ -69,13 +69,13 @@ fn sum_muls(split: std::str::Split<'_, &str>) -> i64 {
                         }
                         println!("multiplying {} and {}", first, second);
                         sum += first * second;
-                    },
+                    }
                     Err(_) => {
                         println!("pair_vec: {:#?}, no second num", pair_vec);
                         continue;
                     }
                 }
-            },
+            }
             Err(_) => {
                 println!("pair_vec: {:#?}, no first num", pair_vec);
                 continue;
@@ -107,10 +107,10 @@ pub fn problem2() -> i64 {
                 sum += sum_muls(a.split("mul("));
                 text = match split_at_nth_char_ex(b, String::from("do()"), 0, 4) {
                     Some((_, b)) => b.to_string(),
-                    None => break
+                    None => break,
                 };
                 println!("new text: {}", text);
-            },
+            }
             None => {
                 sum += sum_muls(text.split("mul("));
                 break;
@@ -127,7 +127,9 @@ pub fn problem2() -> i64 {
 /// Search `s` for the `n`th occurrence of `p`, then split the string
 /// into two halves around that point.
 fn split_at_nth_char(s: &str, p: String, n: usize) -> Option<(&str, &str)> {
-    s.match_indices(&p).nth(n).map(|(index, _)| s.split_at(index))
+    s.match_indices(&p)
+        .nth(n)
+        .map(|(index, _)| s.split_at(index))
 }
 
 /// Same as `split_at_nth_char` but don't include the character.
