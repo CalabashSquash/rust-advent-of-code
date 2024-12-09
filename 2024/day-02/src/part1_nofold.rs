@@ -19,35 +19,14 @@ enum Direction {
 pub fn process(_input: &str) -> miette::Result<String> {
     let (_, reports) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
 
-    // This is wrong. I was thinking about a future day's problem where you sum the middle ones up.
-    let safe: i32 = reports.iter().map(|report| {
-        let safe_permutation = find_safe_permutation(report);
-        if let Some(safe_permutation) = safe_permutation {
-            return safe_permutation[safe_permutation.len() / 2];
-        }
-        &0
-    }).sum();
+    let safe = reports.iter().filter(|&report| {
+        is_report_safe(report).is_ok()
+    }).count();
 
     Ok(safe.to_string())
 }
 
-fn find_safe_permutation(report: &Vec<i32>) -> Option<Vec<&i32>> {
-    println!("FINDING SAFE PERUMTATION FOR : {:?}", report);
-    let safe_permutation = report.iter().permutations(report.len()).find(|p| {
-        println!("{:?}", &p);
-        if is_report_safe(p).is_ok() {
-            return true;
-        }
-        return false;
-    });
-    if let Some(vec) = safe_permutation {
-        return Some(vec);
-    } else {
-        None
-    }
-}
-
-fn is_report_safe(report: &Vec<&i32>) -> Result<(), ()> {
+fn is_report_safe(report: &Vec<i32>) -> Result<(), ()> {
     let mut direction = Direction::NotStarted;
     // Find an invalid pair.
     let has_invalidity = report.iter().tuple_windows::<(_,_)>().find(|(&l, &r)| {
