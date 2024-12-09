@@ -1,8 +1,8 @@
 use miette::miette;
 use nom::{
-    character::complete::{self, line_ending, multispace1, space1},
+    character::complete::{self, line_ending, space1},
     combinator::opt,
-    multi::{many1, separated_list0, separated_list1},
+    multi::{many1, separated_list1},
     sequence::terminated,
     IResult,
 };
@@ -19,29 +19,24 @@ enum Direction {
 pub fn process(_input: &str) -> miette::Result<String> {
     let (_, reports) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
 
-    // This is wrong. I was thinking about a future day's problem where you sum the middle ones up.
-    let safe: i32 = reports.iter().map(|report| {
-        let safe_permutation = find_safe_permutation(report);
-        if let Some(safe_permutation) = safe_permutation {
-            return safe_permutation[safe_permutation.len() / 2];
-        }
-        &0
-    }).sum();
+    let safe: usize = reports.iter().filter(|report| {
+        let safe_combination = find_safe_combination(report);
+        safe_combination.is_some()
+    }).count();
 
     Ok(safe.to_string())
 }
 
-fn find_safe_permutation(report: &Vec<i32>) -> Option<Vec<&i32>> {
-    println!("FINDING SAFE PERUMTATION FOR : {:?}", report);
-    let safe_permutation = report.iter().permutations(report.len()).find(|p| {
-        println!("{:?}", &p);
+fn find_safe_combination(report: &Vec<i32>) -> Option<()> {
+    let safe_permutation = report.iter().combinations(report.len() - 1).find(|p| {
         if is_report_safe(p).is_ok() {
             return true;
         }
         return false;
     });
-    if let Some(vec) = safe_permutation {
-        return Some(vec);
+
+    if let Some(_) = safe_permutation {
+        return Some(());
     } else {
         None
     }
@@ -108,7 +103,7 @@ mod tests {
 1 3 2 4 5
 8 6 4 4 1
 1 3 6 7 9";
-        assert_eq!("2", process(input)?);
+        assert_eq!("4", process(input)?);
         Ok(())
     }
 }
