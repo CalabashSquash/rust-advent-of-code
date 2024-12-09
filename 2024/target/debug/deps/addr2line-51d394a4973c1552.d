@@ -1,0 +1,11 @@
+/home/squash/rust/rust-advent-of-code/2024/target/debug/deps/libaddr2line-51d394a4973c1552.rmeta: /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lib.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/frame.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/function.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lazy.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/line.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lookup.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/unit.rs
+
+/home/squash/rust/rust-advent-of-code/2024/target/debug/deps/addr2line-51d394a4973c1552.d: /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lib.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/frame.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/function.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lazy.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/line.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lookup.rs /home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/unit.rs
+
+/home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lib.rs:
+/home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/frame.rs:
+/home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/function.rs:
+/home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lazy.rs:
+/home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/line.rs:
+/home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/lookup.rs:
+/home/squash/.cargo/registry/src/index.crates.io-6f17d22bba15001f/addr2line-0.24.2/src/unit.rs:

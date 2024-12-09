@@ -1,0 +1,7 @@
+/home/squash/rust/rust-advent-of-code/2024/target/debug/deps/day_01-6cf37b542abdda57: day-01/src/lib.rs day-01/src/part1.rs day-01/src/part2.rs
+
+/home/squash/rust/rust-advent-of-code/2024/target/debug/deps/day_01-6cf37b542abdda57.d: day-01/src/lib.rs day-01/src/part1.rs day-01/src/part2.rs
+
+day-01/src/lib.rs:
+day-01/src/part1.rs:
+day-01/src/part2.rs:

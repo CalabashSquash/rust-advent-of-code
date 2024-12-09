@@ -1,0 +1,1 @@
+/home/squash/rust/rust-advent-of-code/2024/target/debug/part1: /home/squash/rust/rust-advent-of-code/2024/day-01/input1.txt /home/squash/rust/rust-advent-of-code/2024/day-01/src/bin/part1.rs /home/squash/rust/rust-advent-of-code/2024/day-01/src/lib.rs /home/squash/rust/rust-advent-of-code/2024/day-01/src/part1.rs /home/squash/rust/rust-advent-of-code/2024/day-01/src/part2.rs
