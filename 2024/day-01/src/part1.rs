@@ -1,5 +1,12 @@
-use nom::{branch::alt, character::complete::{self, line_ending, multispace1}, combinator::eof, multi::{fold_many0, many0}, sequence::{separated_pair, terminated}, IResult};
 use miette::miette;
+use nom::{
+    branch::alt,
+    character::complete::{self, line_ending, multispace1},
+    combinator::eof,
+    multi::{fold_many0, many0},
+    sequence::{separated_pair, terminated},
+    IResult,
+};
 
 #[tracing::instrument]
 pub fn process(_input: &str) -> miette::Result<String> {
@@ -18,26 +25,19 @@ pub fn process(_input: &str) -> miette::Result<String> {
     Ok(distance.to_string())
 }
 
-
 fn parser(_input: &str) -> IResult<&str, (Vec<i32>, Vec<i32>)> {
     fold_many0(
         terminated(
             separated_pair(complete::i32, multispace1, complete::i32),
-            alt((
-                line_ending,
-                eof
-            ))
+            alt((line_ending, eof)),
         ),
-        || {
-            (Vec::new(), Vec::new())
-        },
+        || (Vec::new(), Vec::new()),
         |(mut l_accum, mut r_accum), (l, r)| {
             l_accum.push(l);
             r_accum.push(r);
             (l_accum, r_accum)
-        }
+        },
     )(_input)
-
 }
 
 #[cfg(test)]
@@ -64,20 +64,8 @@ fn parse_file(_input: &str) -> (Vec<i64>, Vec<i64>) {
 
     for line in _input.lines() {
         let mut numbers = line.split_whitespace();
-        first_col.push(
-            numbers
-                .next()
-                .unwrap()
-                .parse::<i64>()
-                .unwrap(),
-        );
-        second_col.push(
-            numbers
-                .next()
-                .unwrap()
-                .parse::<i64>()
-                .unwrap(),
-        );
+        first_col.push(numbers.next().unwrap().parse::<i64>().unwrap());
+        second_col.push(numbers.next().unwrap().parse::<i64>().unwrap());
     }
     (first_col, second_col)
 }
