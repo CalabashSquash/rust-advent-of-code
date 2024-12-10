@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use miette::miette;
 use nom::{
     character::complete::{self, line_ending, space1},
@@ -6,7 +7,6 @@ use nom::{
     sequence::terminated,
     IResult,
 };
-use itertools::Itertools;
 
 #[derive(Debug)]
 enum Direction {
@@ -19,10 +19,13 @@ enum Direction {
 pub fn process(_input: &str) -> miette::Result<String> {
     let (_, reports) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
 
-    let safe: usize = reports.iter().filter(|report| {
-        let safe_combination = find_safe_combination(report);
-        safe_combination.is_some()
-    }).count();
+    let safe: usize = reports
+        .iter()
+        .filter(|report| {
+            let safe_combination = find_safe_combination(report);
+            safe_combination.is_some()
+        })
+        .count();
 
     Ok(safe.to_string())
 }
@@ -45,7 +48,7 @@ fn find_safe_combination(report: &Vec<i32>) -> Option<()> {
 fn is_report_safe(report: &Vec<&i32>) -> Result<(), ()> {
     let mut direction = Direction::NotStarted;
     // Find an invalid pair.
-    let has_invalidity = report.iter().tuple_windows::<(_,_)>().find(|(&l, &r)| {
+    let has_invalidity = report.iter().tuple_windows::<(_, _)>().find(|(&l, &r)| {
         if (l - r).abs() > 3 {
             return true;
         }
@@ -60,12 +63,12 @@ fn is_report_safe(report: &Vec<&i32>) -> Result<(), ()> {
                 } else {
                     return true;
                 }
-            },
+            }
             Direction::Decreasing => {
                 if l <= r {
                     return true;
                 }
-            },
+            }
             Direction::Increasing => {
                 if l >= r {
                     return true;
@@ -77,7 +80,7 @@ fn is_report_safe(report: &Vec<&i32>) -> Result<(), ()> {
     });
 
     if let Some(_) = has_invalidity {
-        return Err(())
+        return Err(());
     }
 
     Ok(())
