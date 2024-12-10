@@ -9,19 +9,24 @@ use nom::{
 pub fn process(_input: &str) -> miette::Result<String> {
     let (_, map) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
 
-    let mut sum = 0;
-    for (row_num, row) in map.iter().enumerate() {
-        for (col_num, &height) in row.iter().enumerate() {
-            if height == 0 {
-                sum += do_searching_around(0, (row_num, col_num), &map);
-            }
-        }
-    }
+    // Filter out the zeros and search from there.
+    // Find number of
+    let sum: i32 = map
+        .iter()
+        .enumerate()
+        .map(|(row_num, row)| {
+            row.iter()
+                .enumerate()
+                .filter(|(_, &height)| height == 0)
+                .map(|(col_num, _)| find_trails(0, (row_num, col_num), &map))
+                .sum::<i32>()
+        })
+        .sum();
 
     Ok(sum.to_string())
 }
 
-fn do_searching_around(elem: u32, coords: (usize, usize), map: &Vec<Vec<u32>>) -> i32 {
+fn find_trails(elem: u32, coords: (usize, usize), map: &Vec<Vec<u32>>) -> i32 {
     if elem == 9 {
         return 1;
     }
@@ -29,7 +34,7 @@ fn do_searching_around(elem: u32, coords: (usize, usize), map: &Vec<Vec<u32>>) -
     let surrounding_found = search_surrounding(elem + 1, coords, &map);
     surrounding_found
         .iter()
-        .map(|&coord| do_searching_around(elem + 1, coord, map))
+        .map(|&coord| find_trails(elem + 1, coord, map))
         .sum()
 }
 

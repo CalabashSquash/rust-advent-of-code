@@ -11,30 +11,26 @@ use nom::{
 pub fn process(_input: &str) -> miette::Result<String> {
     let (_, map) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
 
-    let mut result: u32 = 0;
-    result = map.iter().enumerate().map(|(row_num, row)| {
-        row.iter().enumerate().filter(|(_, &height)| {
-            height == 0
-        }).map(|(col_num, _)| {
-            let mut ends_of_paths: HashSet<(usize, usize)> = HashSet::new();
-            do_searching_around(0, (row_num, col_num), &map, &mut ends_of_paths);
-            ends_of_paths.len() as u32
-        }).sum::<u32>()
-
-        // for (col_num, &height) in row.iter().enumerate() {
-        //     if height == 0 {
-
-        //         let mut ends_of_paths: HashSet<(usize, usize)> = HashSet::new();
-        //         do_searching_around(0, (row_num, col_num), &map, &mut ends_of_paths);
-        //         sum += ends_of_paths.len();
-        //     }
-        // }
-    }).sum();
+    let result: u32 = map
+        .iter()
+        .enumerate()
+        .map(|(row_num, row)| {
+            row.iter()
+                .enumerate()
+                .filter(|(_, &height)| height == 0)
+                .map(|(col_num, _)| {
+                    let mut ends_of_paths: HashSet<(usize, usize)> = HashSet::new();
+                    find_trails(0, (row_num, col_num), &map, &mut ends_of_paths);
+                    ends_of_paths.len() as u32
+                })
+                .sum::<u32>()
+        })
+        .sum();
 
     Ok(result.to_string())
 }
 
-fn do_searching_around(
+fn find_trails(
     elem: u32,
     coords: (usize, usize),
     map: &Vec<Vec<u32>>,
@@ -47,7 +43,7 @@ fn do_searching_around(
     let surrounding_found = search_surrounding(elem + 1, coords, &map);
     surrounding_found
         .iter()
-        .map(|&coord| do_searching_around(elem + 1, coord, map, set))
+        .map(|&coord| find_trails(elem + 1, coord, map, set))
         .collect()
 }
 
@@ -93,7 +89,7 @@ fn parse(_input: &str) -> IResult<&str, Vec<Vec<u32>>> {
 
 fn parse_line(_input: &str) -> IResult<&str, Vec<u32>> {
     let (remaining, (numbers, _)) = many_till(
-        one_of("0123456789").map(|c| c.to_digit(10).unwrap()),
+        one_of("0123456789").map(|c| c.to_digit(10).unwrap()), // question for the reader: What would this look like if we wanted to propagate the error?
         line_ending,
     )(_input)?;
     dbg!(&numbers);
