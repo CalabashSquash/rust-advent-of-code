@@ -9,18 +9,12 @@ use nom::{
 
 #[tracing::instrument]
 pub fn process(_input: &str) -> miette::Result<String> {
-    // let (_, map) = parse_line(_input).map_err(|e| miette!("Error parsing: {}", e))?;
-
     let (_, map) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
-    println!("{:?}", &map);
-
-    // let mut ends_of_paths: HashSet<(usize,usize)> = HashSet::new();
 
     let mut sum = 0;
     for (row_num, row) in map.iter().enumerate() {
         for (col_num, &height) in row.iter().enumerate() {
             if height == 0 {
-                println!("height: {}", height);
 
                 let mut ends_of_paths: HashSet<(usize, usize)> = HashSet::new();
                 do_searching_around(0, (row_num, col_num), &map, &mut ends_of_paths);
@@ -42,11 +36,9 @@ fn do_searching_around(
         set.insert(coords);
     }
 
-    println!("Elem: {}", elem);
     let surrounding_found = search_surrounding(elem + 1, coords, &map);
     surrounding_found
         .iter()
-        .inspect(|&c| println!("surrounding coords: {:?}", c))
         .map(|&coord| do_searching_around(elem + 1, coord, map, set))
         .collect()
 }
