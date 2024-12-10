@@ -1,59 +1,44 @@
-use nom::{branch::alt, bytes::complete::{tag, take_until, take_while}, character::complete::{self}, combinator::opt, multi::{fold_many0, many0}, sequence::{delimited, separated_pair, terminated}, IResult};
+use std::ops::Mul;
+
+use nom::{Parser, branch::alt, bytes::complete::{tag, take_until, take_while}, character::complete::{self, anychar}, combinator::{map, map_res, opt}, multi::{fold_many0, many0, many1, many_till}, sequence::{delimited, separated_pair, terminated}, IResult};
 use miette::miette;
 
 #[tracing::instrument]
 pub fn process(_input: &str) -> miette::Result<String> {
     let (_, pairs) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
-
-    dbg!(pairs);
-
-
-    Ok("hi".to_string())
-}
-
-fn parse(_input: &str) -> IResult<&str, Vec<(i32, i32)>> {
-    let (remaining, consumed) = fold_many0(
-            parse_next_mul
-        ,
-        Vec::new, |mut accum, new| {
-            if new.is_some() {
-                accum.push(new);
-            }
-            accum
-        }
-    )(_input)?;
-
-    Ok((
-        remaining,
-        consumed.iter().filter(|o| {
-            o.is_some()
-        }).map(|o| {
-            match o {
-                Some(pair) => *pair,
-                None => panic!("Should not have Nones after filtering")
-            }
-        }).collect()
-    ))
-}
-    
-fn parse_next_mul(_input: &str) -> IResult<&str, Option<(i32, i32)>> {
-    let (remaining, _) = take_until("mul(")(_input)?;
-    dbg!(&_input);
-    let pair_parsed = delimited(tag("mul("), parse_pair, tag(")"))(remaining);
-    match pair_parsed {
-        Ok((remaining, consumed)) => {
-            Ok((remaining, Some(consumed)))
-        },
-        Err(e) => {
-            Ok(("No pair found", None))
-        }
+    let solution: i32 = pairs.iter().map(|op| {
+        let Operation::Mul(x, y) = op;
+        return x * y;
     }
+    ).sum();
+
+    Ok(solution.to_string())
+}
+
+enum Operation {
+    Mul(i32,i32)
+}
+
+fn parse(_input: &str) -> IResult<&str, Vec<Operation>> {
+        many1(
+            many_till(anychar, parse_pair)
+                .map(|(_discard, pair)| {
+                    pair
+                })
+        )(_input)
 }
 
 // Takes: "123,456"
 // Returns: (123, 456)
-fn parse_pair(_input: &str) -> IResult<&str, (i32, i32)> {
-    separated_pair(complete::i32, tag(","), complete::i32)(_input)
+fn parse_pair(_input: &str) -> IResult<&str, Operation> {
+    let (remaining, _) = tag("mul")(_input)?;
+    let (remaining, pair) = delimited(
+        tag("("),
+        separated_pair(complete::i32, tag(","), complete::i32),
+        tag(")")
+    )(remaining)?;
+
+    Ok((remaining, Operation::Mul(pair.0, pair.1)))
 }
 
 
@@ -64,7 +49,7 @@ mod tests {
     #[test]
     fn test_process() -> miette::Result<()> {
         let input = "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
-        assert_eq!("", process(input)?);
+        assert_eq!("161", process(input)?);
         Ok(())
     }
 }
