@@ -47,11 +47,11 @@ fn find_cheapest(machine: &Machine) -> Option<i64> {
 
     let x_a_coeff = machine.button_a.x * machine.button_b.y;
     // let x_b_coeff = machine.button_b.x * machine.button_b.y;
-    let x_solution =   machine.prize.x * machine.button_b.y;
+    let x_solution = machine.prize.x * machine.button_b.y;
 
     let y_a_coeff = machine.button_a.y * machine.button_b.x;
     // let y_b_coeff = machine.button_b.y * machine.button_b.x;
-    let y_solution =   machine.prize.y * machine.button_b.x;
+    let y_solution = machine.prize.y * machine.button_b.x;
 
     let diff_a_coeff = x_a_coeff - y_a_coeff;
     let diff_solution = x_solution - y_solution;
@@ -64,7 +64,7 @@ fn find_cheapest(machine: &Machine) -> Option<i64> {
     let b_times_bx = machine.prize.x - a * machine.button_a.x;
     let b = b_times_bx / machine.button_b.x;
     if b_times_bx % machine.button_b.x != 0 {
-        return None
+        return None;
     }
 
     Some(3 * a + b)
@@ -93,7 +93,13 @@ fn parse_prize(_input: &str) -> IResult<&str, Coordinates> {
     let (remaining, x) = complete::i64(remaining)?;
     let (remaining, _) = tag(", Y=")(remaining)?;
     let (remaining, y) = complete::i64(remaining)?;
-    Ok((remaining, Coordinates { x: x + 10000000000000, y: y + 10000000000000 }))
+    Ok((
+        remaining,
+        Coordinates {
+            x: x + 10000000000000,
+            y: y + 10000000000000,
+        },
+    ))
 }
 
 fn parse_machine(_input: &str) -> IResult<&str, Machine> {
