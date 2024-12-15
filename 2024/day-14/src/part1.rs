@@ -35,7 +35,7 @@ struct Robot {
 pub fn process(_input: &str, rows: usize, columns: usize) -> miette::Result<String> {
     let mut grid = generate_initial_grid(rows, columns);
 
-    let (remaining, robots) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
+    let (_, robots) = parse(_input).map_err(|e| miette!("Error parsing: {}", e))?;
 
     let new_robots = play_simulation(robots, 100, rows, columns);
 
