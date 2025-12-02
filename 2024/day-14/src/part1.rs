@@ -4,7 +4,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::{self, line_ending, multispace0},
     combinator::{map, opt},
-    multi:: many0,
+    multi::many0,
     sequence::{preceded, separated_pair, terminated},
     IResult,
 };
