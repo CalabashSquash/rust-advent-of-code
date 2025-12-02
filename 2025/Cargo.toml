@@ -1,0 +1,31 @@
+[workspace]
+members = [
+    "day-*",
+    "day-01",
+    "day-02",
+]
+default-members = ["day-*"]
+resolver = "2"
+
+[workspace.dependencies]
+divan = "0.1.7"
+itertools = "0.13.0"
+nom = "7.1.3"
+rstest = "0.23.0"
+tracing = "0.1.41"
+
+[workspace.dependencies.miette]
+version = "7.4"
+features = ["fancy"]
+
+[workspace.dependencies.test-log]
+version = "0.2.13"
+features = ["trace"]
+default-features = false
+
+[workspace.dependencies.tracing-subscriber]
+version = "0.3.18"
+features = [
+    "fmt",
+    "env-filter",
+]
