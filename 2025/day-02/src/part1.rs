@@ -34,7 +34,8 @@ fn is_invalid(num: u64) -> bool {
         return false;
     }
 
-    num.get(..num.len() / 2) == num.get(num.len() / 2..)
+    let half = num.len() / 2;
+    num.get(..half) == num.get(half..)
 }
 
 fn parse(input: &str) -> IResult<&str, Vec<Range>> {

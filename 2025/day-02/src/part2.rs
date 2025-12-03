@@ -47,16 +47,16 @@ fn is_repeated(num: &String, start: usize, divisor: usize) -> bool {
     if num.len() % divisor != 0 {
         return false;
     }
-    let end = num.len() / divisor;
 
-    for i in start..end {
-        for j in 0..divisor - 1 {
-            let idx_to_scan = i + end * (j + 1);
-            if num[i..i + 1] != num[idx_to_scan..idx_to_scan + 1] {
-                return false;
-            }
+    let scan_length = num.len() / divisor;
+    // Iterate divisor-1 times because you're always comparing the first chunk against the divisor-1 other chunks.
+    for j in 0..divisor - 1 {
+        let idx_to_scan = scan_length * (j + 1);
+        if num[0..scan_length] != num[idx_to_scan..idx_to_scan + scan_length] {
+            return false;
         }
     }
+
     true
 }
 
