@@ -1,7 +1,7 @@
 use miette::miette;
 use nom::{
     bytes::complete::tag, character::complete::u64, multi::separated_list1,
-    sequence::separated_pair, IResult,
+    sequence::separated_pair, IResult, Parser,
 };
 
 #[derive(Debug)]
@@ -36,7 +36,6 @@ fn is_invalid(num: u64) -> bool {
 
     for i in 2..num.len() + 1 {
         if is_repeated(&num, 0, i) {
-            println!("REPEATED:{num}, i:{i}");
             return true;
         }
     }
@@ -67,24 +66,21 @@ fn parse(input: &str) -> IResult<&str, Vec<Range>> {
 }
 
 fn parse_range(input: &str) -> IResult<&str, Range> {
-    let (input, (low, high)) = separated_pair(u64, tag("-"), u64)(input)?;
-    return Ok((
-        input,
-        Range {
-            low: low,
-            high: high,
-        },
-    ));
+    separated_pair(u64, tag("-"), u64)
+        .map(|(low, high)| Range { low, high })
+        .parse(input)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use ntest::timeout;
 
+    #[timeout(300)]
     #[test]
     fn test_process() -> miette::Result<()> {
-        // let input = "11-2,9999755745207-999999755766099,11111111-11111112,11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
         let input = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
+        // let input = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
         assert_eq!("4174379265", process(input)?);
         Ok(())
     }
