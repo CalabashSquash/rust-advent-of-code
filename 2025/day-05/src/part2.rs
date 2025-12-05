@@ -71,12 +71,10 @@ pub fn process(_input: &str) -> miette::Result<String> {
 
     Ok(valid_id_ranges
         .iter()
-        .inspect(|&&x| println!("{x:#?}"))
         .map(|range| match range {
             None => 0,
             Some(Range { low, high }) => high - low + 1,
         })
-        .inspect(|x| println!("{x}"))
         .sum::<u128>()
         .to_string())
 }
