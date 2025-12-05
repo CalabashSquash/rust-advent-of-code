@@ -6,11 +6,35 @@ use nom::{
     IResult,
 };
 
+const NUM_DIGITS: usize = 12;
+
 #[tracing::instrument]
 pub fn process(_input: &str) -> miette::Result<String> {
     let (_, banks) = all_consuming(parse)(_input).map_err(|e| miette!("Error: {e}"))?;
     let x: u64 = banks.iter().map(|bank| max(bank)).sum();
+    let y: u64 = banks
+        .iter()
+        .map(|&bank| second_solution(bank.to_string()))
+        .sum();
+    println!("second solution:{y}");
     return Ok(x.to_string());
+}
+
+fn second_solution(bank: String) -> u64 {
+    let mut bank_copy: Vec<char> = bank.chars().collect();
+    for _ in 0..bank.len() - 12 {
+        for j in 0..bank.len() {
+            if j == bank_copy.len() - 1 {
+                // last elem
+                bank_copy.remove(j);
+                break;
+            } else if bank_copy[j..j + 1] < bank_copy[j + 1..j + 2] {
+                bank_copy.remove(j);
+                break;
+            }
+        }
+    }
+    bank_copy.iter().collect::<String>().parse::<u64>().unwrap()
 }
 
 fn parse(input: &str) -> IResult<&str, Vec<&str>> {
@@ -21,11 +45,11 @@ fn max(bank: &str) -> u64 {
     let mut running_total: Vec<u64> = Vec::new();
     let mut prev_best_idx_plus_one = 0;
 
-    for i in 0..12 {
+    for i in 1..=NUM_DIGITS {
         let Best {
             digit: new_best,
             idx: new_best_idx,
-        } = get_best(&bank[(prev_best_idx_plus_one)..bank.len() - (11 - i)]);
+        } = get_best(&bank[(prev_best_idx_plus_one)..bank.len() - (NUM_DIGITS - i)]);
 
         running_total.push(new_best);
         prev_best_idx_plus_one += new_best_idx + 1; // We need to increment on top of the previous one, because the new best index is relative to the beginning of the truncated sub-string.
@@ -34,7 +58,6 @@ fn max(bank: &str) -> u64 {
         .iter()
         .map(|digit| digit.to_string())
         .collect::<String>();
-
     return result_str.parse::<u64>().unwrap();
 }
 
@@ -43,20 +66,18 @@ struct Best {
     idx: usize,
 }
 fn get_best(search: &str) -> Best {
-    let mut largest = 0;
-    let mut largest_index = 0;
-    for i in 0..search.len() {
-        let current_digit: u64 = search[i..i + 1].to_string().parse().unwrap();
-        if current_digit > largest {
-            largest = current_digit;
-            largest_index = i;
-        }
-    }
-
-    return Best {
-        digit: largest,
-        idx: largest_index,
-    };
+    let (idx, digit) = search
+        .chars()
+        .enumerate()
+        // Can't use Iterator::max because that returns the last max. We need first max.
+        .fold((0, 0), |(max_idx, max), (idx, digit)| {
+            let digit = digit.to_string().parse::<u64>().unwrap();
+            if digit > max {
+                return (idx, digit);
+            }
+            (max_idx, max)
+        });
+    Best { digit: digit, idx }
 }
 
 #[cfg(test)]
