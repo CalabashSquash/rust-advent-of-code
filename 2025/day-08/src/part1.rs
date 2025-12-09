@@ -71,17 +71,27 @@ pub fn process(_input: &str) -> miette::Result<String> {
 
     let mut circuits: Vec<Vec<Point>> = vec![];
 
-    let mut already_added: HashMap<(&Point, &Point), bool> = HashMap::new();
+    let mut pair_in_distances: HashMap<(Point, Point), bool> = HashMap::new();
     let distances: Vec<(u64, &Point, &Point)> = (0..coords.len())
         .into_iter()
         .map(|point| {
             let mut distances = vec![];
             for inner_point in 0..coords.len() {
-                distances.push((
-                    get_distance(&coords[point], &coords[inner_point]),
-                    &coords[point],
-                    &coords[inner_point],
-                ));
+                if pair_in_distances.contains_key(&(coords[point], coords[inner_point]))
+                    || pair_in_distances.contains_key(&(coords[inner_point], coords[point]))
+                {
+                    // Pair already added.
+                    continue;
+                }
+                pair_in_distances.insert((coords[point], coords[inner_point]), true);
+                let distance = get_distance(&coords[point], &coords[inner_point]);
+                if distance > 0 {
+                    distances.push((
+                        get_distance(&coords[point], &coords[inner_point]),
+                        &coords[point],
+                        &coords[inner_point],
+                    ));
+                }
             }
             distances
         })
@@ -89,29 +99,18 @@ pub fn process(_input: &str) -> miette::Result<String> {
         .sorted_by(|(dist1, _, _), (dist2, _, _)| u64::cmp(dist1, dist2))
         .collect();
 
-    // Transform distances into only the pairs we are concerned with.
-    let distances = distances
-        .into_iter()
-        .skip(20)
-        .step_by(2)
-        .take(X_SHORTEST_CONNECTIONS)
-        .collect::<Vec<(u64, &Point, &Point)>>();
-
-    for (_, p1, p2) in distances {
-        if already_added.contains_key(&(p1, p2)) || already_added.contains_key(&(p2, p1)) {
-            continue;
-        }
-        let add_res = add_point_pair(false, *p1, *p2, &mut circuits);
-        already_added.insert((p1, p2), true);
+    for (_, p1, p2) in &distances[..X_SHORTEST_CONNECTIONS] {
+        add_point_pair(false, **p1, **p2, &mut circuits);
     }
 
-    let x = circuits
+    let x: usize = circuits
         .iter()
         .map(|circuit| circuit.len())
         .sorted()
         .rev()
         .take(X_LARGEST_CIRCUITS)
-        .fold(1 as u128, |accum, len| accum * (len as u128));
+        .inspect(|x| println!("x{x}"))
+        .product();
 
     Ok(x.to_string())
 }
@@ -161,7 +160,7 @@ mod tests {
 984,92,344
 425,690,689
 ";
-        assert_eq!("4", process(input)?);
+        assert_eq!("0", process(input)?);
         Ok(())
     }
 }
